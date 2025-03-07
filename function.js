@@ -1,46 +1,43 @@
 const video = document.getElementById("video");
 
-// Kiểm tra trình duyệt hỗ trợ camera không
+// Kiểm tra trình duyệt có hỗ trợ camera không
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({
         video: {
-            facingMode: { exact: "environment" }, // Camera sau
+            facingMode: { ideal: "environment" }, // Sử dụng camera sau
             width: { ideal: 1280 },
             height: { ideal: 720 }
         }
     })
         .then(stream => {
-            let video = document.getElementById("video");
             video.srcObject = stream;
             video.play();
         })
         .catch(err => {
-            console.error("Không thể truy cập camera", err);
-            alert("Vui lòng kiểm tra quyền camera hoặc thử lại với camera trước.");
+            console.warn("Không thể mở camera sau, thử mở camera trước...", err);
 
-            // Nếu không thể mở camera sau, thử mở camera trước
+            // Nếu không mở được camera sau, thử camera trước
             navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "user" } // Chuyển sang camera trước
+                video: { facingMode: "user" }
             })
                 .then(stream => {
-                    let video = document.getElementById("video");
                     video.srcObject = stream;
                     video.play();
                 })
                 .catch(err => {
-                    console.error("Không thể truy cập bất kỳ camera nào", err);
-                    alert("Thiết bị không hỗ trợ camera hoặc bị trình duyệt chặn.");
+                    console.error("Không thể mở camera nào cả", err);
+                    alert("Thiết bị không hỗ trợ camera hoặc quyền bị từ chối.");
                 });
         });
 } else {
     alert("Trình duyệt của bạn không hỗ trợ camera.");
 }
 
-
 // Chụp ảnh từ camera
 function captureImage() {
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
