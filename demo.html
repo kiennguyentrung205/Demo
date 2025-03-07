@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Loại Rác Thải</title>
+    <link rel="stylesheet" href="layout.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Website Phân Loại Rác Thải</h1>
+        <p>Hệ thống giúp phân loại rác tái chế và không tái chế.</p>
+
+        <!-- Khu vực Camera thu thập dữ liệu -->
+        <div id="camera-container">
+            <video id="video" autoplay></video>
+            <button class="btn" onclick="captureImage()">Chụp ảnh</button>
+            <canvas id="canvas" style="display:none;"></canvas>
+        </div>
+
+        <!-- Hoặc tải hình ảnh lên -->
+        <div>
+            <p>Hoặc chọn ảnh từ thiết bị:</p>
+            <input type="file" accept="image/*" id="upload" />
+        </div>
+
+        <!-- Kết quả do AI xử lý -->
+        <div id="output">
+            <p>Chỗ trả kết quả rác bằng văn bản</p>
+        </div>
+    </div>
+    <script src="function.js"></script>
+</body>
+
+</html>
