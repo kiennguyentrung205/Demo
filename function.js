@@ -1,12 +1,24 @@
-// Bật camera
 const video = document.getElementById("video");
-navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-        video.srcObject = stream;
+
+// Kiểm tra trình duyệt hỗ trợ camera không
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({
+        video: {
+            facingMode: "environment", // Sử dụng camera sau trên điện thoại
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+        }
     })
-    .catch(err => {
-        console.error("Không thể truy cập camera", err);
-    });
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(err => {
+            console.error("Không thể truy cập camera", err);
+            alert("Vui lòng cấp quyền truy cập camera cho trình duyệt.");
+        });
+} else {
+    alert("Trình duyệt của bạn không hỗ trợ camera.");
+}
 
 // Chụp ảnh từ camera
 function captureImage() {
