@@ -50,21 +50,27 @@ document.getElementById("upload").addEventListener("change", function () {
     processImage();
 });
 
-// Giả lập xử lý AI và trả kết quả
 function processImage() {
-    const outputDiv = document.getElementById("output");
-    outputDiv.innerHTML = "<p>Đang xử lý...</p>";
-
-    setTimeout(() => {
-        const result = [
-            { type: "Rác thải nhựa", note: "Nhựa có thể tái chế, rửa sạch trước khi bỏ vào thùng tái chế." },
-            { type: "Rác thải giấy", note: "Giấy sạch có thể tái chế, giấy bẩn (dầu mỡ) thì không." },
-            { type: "Rác thải kim loại", note: "Kim loại có thể tái chế, hãy phân loại riêng." },
-            { type: "Rác thải thủy tinh", note: "Có thể tái chế, cẩn thận khi xử lý." },
-            { type: "Rác thải điện tử", note: "Không bỏ chung với rác thải thường, mang đến nơi thu gom rác điện tử." },
-            { type: "Rác thải vải vóc", note: "Có thể tái sử dụng hoặc quyên góp nếu còn dùng được." }
-        ];
-        const randomResult = result[Math.floor(Math.random() * result.length)];
-        outputDiv.innerHTML = `<p>Loại rác: <strong>${randomResult.type}</strong></p><p>Lưu ý: ${randomResult.note}</p>`;
-    }, 2000);
+    const canvas = document.getElementById("canvas");
+    
+    canvas.toBlob(function(blob) {
+        const formData = new FormData();
+        formData.append("file", blob, "capture.jpg");
+        
+        fetch("http://localhost:8080/predict", { // Đảm bảo địa chỉ và port khớp
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = `<p>Loại rác: <strong>${data.type}</strong></p>
+                                   <p>Lưu ý: ${data.note}</p>`;
+        })
+        .catch(error => {
+            console.error("Lỗi kết nối với server:", error);
+            document.getElementById("output").innerHTML = "<p>Có lỗi xảy ra khi xử lý ảnh.</p>";
+        });
+    }, "image/jpeg");
 }
+
